@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const router = require('express').Router();
 
 router.post('/register', (req, res) => {
@@ -5,6 +6,7 @@ router.post('/register', (req, res) => {
   try {
 		const { username } = req.body
 		const user = await Users.findBy({ username }).first()
+
 
 		if (user) {
 			return res.status(409).json({
@@ -23,8 +25,9 @@ router.post('/login', (req, res) => {
   try {
 		const { username, password } = req.body
 		const user = await Users.findBy({ username }).first()
+		const passwordValid = await bcrypt.compare(password, user.password);
 
-		if (!user) {
+		if (!user || !passwordValid) {
 			return res.status(401).json({
 				message: "Invalid Credentials",
 			})
