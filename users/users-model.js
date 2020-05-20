@@ -1,8 +1,7 @@
 const bcrypt = require("bcryptjs");
-const db = require("../database/config");
+const db = require("../database/dbConfig");
 
 async function add(user) {
-  // hash password with time complexity of 10
   user.password = await bcrypt.hash(user.password, 14);
   const [id] = await db("users").insert(user);
   return findById(id);

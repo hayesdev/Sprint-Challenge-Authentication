@@ -38,6 +38,4 @@ function restrict() {
 }
 
 module.exports = restrict;
-module.exports = (req, res, next) => {
-  res.status(401).json({ you: "shall not pass!" });
-};
+//  ^^^ this was ^^^ throwing an error b/c i was exporting as an object!
