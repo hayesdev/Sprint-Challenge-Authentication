@@ -15,10 +15,6 @@ server.use(helmet());
 server.use(cors());
 server.use(express.json());
 
-server.use("/api/auth", authRouter);
-// server.use("/api/jokes", authenticate, jokesRouter); **** might need to put this back ***
-server.use("/api/jokes", jokesRouter);
-server.use("/api/users", usersRouter);
 server.use(
   session({
     name: "token", // overwrites default cookie name, hides our stack better
@@ -35,6 +31,11 @@ server.use(
     }),
   })
 );
+server.use("/api/auth", authRouter);
+// server.use("/api/jokes", authenticate, jokesRouter); **** might need to put this back ***
+server.use("/api/jokes", jokesRouter);
+server.use("/api/users", usersRouter);
+
 server.use((err, req, res, next) => {
   console.log(err);
   res.status(500).json({
