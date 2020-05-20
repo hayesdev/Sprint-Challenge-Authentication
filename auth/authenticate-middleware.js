@@ -4,32 +4,18 @@
 */
 const bcrypt = require("bcryptjs");
 const Users = require("../users/users-model");
+const sessions = {};
 
-function restrict() {
+function authenticate() {
   const authError = {
     message: "Invalid credentials",
   };
 
   return async (req, res, next) => {
     try {
-      const { username, password } = req.headers;
-
-      if (!username || !password) {
+      if (!req.session || !req.session.user) {
         return res.status(401).json(authError);
       }
-
-      const user = await Users.findBy({ username }).first();
-
-      if (!user) {
-        return res.status(401).json(authError);
-      }
-
-      const passwordValid = await bcrypt.compare(password, user.password);
-
-      if (!passwordValid) {
-        return res.status(401).json(authError);
-      }
-
       next();
     } catch (err) {
       next(err);
@@ -37,5 +23,8 @@ function restrict() {
   };
 }
 
-module.exports = restrict;
-//  ^^^ this was ^^^ throwing an error b/c i was exporting as an object!
+module.exports = {
+  sessions,
+  authenticate,
+};
+//  ^^^ this was throwing an error b/c i was exporting as an object by itself

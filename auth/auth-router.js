@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const Users = require("../users/users-model");
+const { sessions, authenticate } = require("./authenticate-middleware");
 
 const router = express.Router();
 
@@ -35,12 +36,27 @@ router.post("/login", async (req, res, next) => {
       });
     }
 
+    console.log(req.session);
+    req.session.user = user;
+
     res.json({
       message: `Welcome ${user.username}!`,
     });
   } catch (err) {
     next(err);
   }
+});
+
+router.get("/logout", authenticate(), (req, res, next) => {
+  req.session.destroy((err) => {
+    if (err) {
+      next(err);
+    } else {
+      res.json({
+        message: "Successfully logged out",
+      });
+    }
+  });
 });
 
 module.exports = router;
